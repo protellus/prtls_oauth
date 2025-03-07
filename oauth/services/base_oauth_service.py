@@ -3,9 +3,9 @@ import datetime
 import secrets
 import logging
 from django.urls import reverse
-from oauth.models import OAuthToken
 from django.utils.timezone import now
 from putils.utils import get_setting
+from oauth.models import OAuthToken
 
 logger = logging.getLogger("oauth")
 
