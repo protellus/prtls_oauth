@@ -3,11 +3,11 @@ import datetime
 import secrets
 import logging
 from django.urls import reverse
+from oauth.models import OAuthToken
 from django.utils.timezone import now
 from putils.utils import get_setting
-from oauth.models import OAuthToken
 
-logger = logging.getLogger("oauth")
+logger = logging.getLogger(__name__)
 
 class OAuthService:
     """
@@ -23,6 +23,7 @@ class OAuthService:
     OAUTH_TOKEN_ENDPOINT = None
     OAUTH_REVOKE_ENDPOINT = None
     OAUTH_SCOPE = None
+    APP_NAME = "oauth" # The Django app name, needed for reverse URLs, override in subclass
     AUTH_TOKEN_MODEL = OAuthToken
     EXTRA_AUTH_PARAMS = {}  # Allow subclasses to specify provider-specific parameters
 
@@ -260,7 +261,7 @@ class OAuthService:
             raise RuntimeError("OAUTH_PROVIDER_NAME must be defined in the subclass.")
 
         # Get the relative path for the OAuth callback
-        relative_path = reverse(f"oauth:{cls.OAUTH_PROVIDER_NAME}_callback")
+        relative_path = reverse(f"{cls.APP_NAME}:{cls.OAUTH_PROVIDER_NAME}_callback")
 
         # 1️⃣ If request is provided, use it to build the absolute URI
         if request:

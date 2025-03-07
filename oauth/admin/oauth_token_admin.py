@@ -3,41 +3,18 @@ from django.urls import reverse, path
 from django.utils.html import format_html
 from django.utils.timezone import now
 from django.contrib import messages
-from django.shortcuts import redirect
+from putils.utils import get_setting
 from oauth.models import OAuthToken
+from django.shortcuts import redirect
 import logging
 
 logger = logging.getLogger("oauth")
-
-# 🔹 Define a mapping of services to their respective classes dynamically
-OAUTH_PROVIDERS = {
-#    "google": "gworkspace.services.GoogleOAuthService",
-#    "zoho": "financials.services.ZohoOAuthService",
-}
-
-def get_oauth_service(service_name):
-    """
-    Dynamically import and return the OAuth service class for a given service name.
-    """
-    service_class_path = OAUTH_PROVIDERS.get(service_name.lower())
-    if not service_class_path:
-        return None
-    
-    module_name, class_name = service_class_path.rsplit(".", 1)
-    
-    try:
-        module = __import__(module_name, fromlist=[class_name])
-        return getattr(module, class_name)
-    except (ImportError, AttributeError) as e:
-        logger.error(f"Failed to import {class_name} from {module_name}: {e}")
-        return None
 
 @admin.register(OAuthToken)
 class OAuthTokenAdmin(admin.ModelAdmin):
     """
     Admin interface for managing OAuth tokens for multiple providers dynamically.
     """
-
     list_display = (
         "user_id",
         "service",
@@ -67,6 +44,28 @@ class OAuthTokenAdmin(admin.ModelAdmin):
             "fields": ("created_at", "updated_at"),
         }),
     )
+
+    # 🔹 Define a mapping of services to their respective classes dynamically
+    OAUTH_PROVIDERS = get_setting("OAUTH_PROVIDERS", {})
+
+    @classmethod
+    def get_oauth_service(cls, service_name):
+        """
+        Dynamically import and return the OAuth service class for a given service name.
+        """
+        service_class_path = cls.OAUTH_PROVIDERS.get(service_name.lower())
+        if not service_class_path:
+            return None
+        
+        module_name, class_name = service_class_path.rsplit(".", 1)
+        
+        try:
+            module = __import__(module_name, fromlist=[class_name])
+            return getattr(module, class_name)
+        except (ImportError, AttributeError) as e:
+            logger.error(f"Failed to import {class_name} from {module_name}: {e}")
+            return None
+
     def access_token_preview(self, obj):
         """
         Display a preview of the access token (first 10 characters).
@@ -105,7 +104,7 @@ class OAuthTokenAdmin(admin.ModelAdmin):
         for token in queryset:
             try:
                 # Dynamically get the correct service class
-                service_class = get_oauth_service(token.service)
+                service_class = self.get_oauth_service(token.service)
                 if not service_class:
                     raise RuntimeError(f"No service found for {token.service}")
 
@@ -140,7 +139,7 @@ class OAuthTokenAdmin(admin.ModelAdmin):
         urls = super().get_urls()
         custom_urls = [
             path(f"authorize_{service}/", self.admin_site.admin_view(self.authorize_service), name=f"authorize_{service}")
-            for service in OAUTH_PROVIDERS.keys()
+            for service in self.OAUTH_PROVIDERS.keys()
         ]
         return custom_urls + urls
 
@@ -149,7 +148,7 @@ class OAuthTokenAdmin(admin.ModelAdmin):
         Handle the authorization redirect for different services.
         """
         try:
-            service_class = get_oauth_service(service_name)
+            service_class = self.get_oauth_service(service_name)
             if not service_class:
                 self.message_user(request, f"OAuth service '{service_name}' not found.", messages.ERROR)
                 return redirect("..")

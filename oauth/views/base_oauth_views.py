@@ -5,7 +5,7 @@ from django.http import JsonResponse
 from rest_framework.viewsets import ViewSet
 from rest_framework.decorators import action
 
-logger = logging.getLogger(__name__)
+logger = logging.getLogger("oauth")
 
 class BaseOAuthViewSet(ViewSet):
     """
