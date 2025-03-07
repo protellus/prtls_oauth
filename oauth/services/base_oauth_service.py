@@ -2,6 +2,7 @@ import requests
 import datetime
 import secrets
 import logging
+from django.apps import apps
 from django.urls import reverse
 from django.utils.timezone import now
 from putils.utils import get_setting
@@ -26,13 +27,10 @@ class OAuthService:
     APP_NAME = "oauth" # The Django app name, needed for reverse URLs, override in subclass
     EXTRA_AUTH_PARAMS = {}  # Allow subclasses to specify provider-specific parameters
 
-
-    @classmethod
-    def get_auth_token_model(cls):
-        """ Lazy-loads the OAuthToken model to prevent import issues. """
-        from oauth.models import OAuthToken  # ✅ CORRECT: Import inside the method
-        return OAuthToken
-
+    @property
+    def AUTH_TOKEN_MODEL(self):
+        """ Lazily load the OAuthToken model to avoid AppRegistryNotReady issues """
+        return apps.get_model("oauth", "OAuthToken")  # ✅ This ensures the model is loaded dynamically
 
     @classmethod
     def get_token(cls, user_id="default"):
@@ -47,7 +45,7 @@ class OAuthService:
         Returns:
             str: A valid access token.
         """
-        OAuthToken = cls.get_auth_token_model()
+        OAuthToken = cls().AUTH_TOKEN_MODEL
         try:
             # Check for an existing valid access token
             token = OAuthToken.objects.filter(
@@ -232,17 +230,19 @@ class OAuthService:
         Returns:
             Updated AUTH_TOKEN_MODEL instance.
         """
-        if not cls.AUTH_TOKEN_MODEL:
+
+        OAuthToken = cls().AUTH_TOKEN_MODEL
+        if not OAuthToken:
             raise RuntimeError("AUTH_TOKEN_MODEL is not defined in subclass.")
 
         # Ensure we fetch ONLY the token for the correct service
-        existing_token = cls.AUTH_TOKEN_MODEL.objects.filter(user_id=user_id, service=service).first()
+        existing_token = OAuthToken.objects.filter(user_id=user_id, service=service).first()
 
         # Preserve refresh_token if it's missing in the new response
         if not refresh_token and existing_token:
             refresh_token = existing_token.refresh_token
 
-        token, created = cls.AUTH_TOKEN_MODEL.objects.update_or_create(
+        token, created = OAuthToken.objects.update_or_create(
             user_id=user_id,
             service=service,  # Ensure service is used for filtering
             defaults={
