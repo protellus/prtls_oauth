@@ -3,7 +3,6 @@ import datetime
 import secrets
 import logging
 from django.urls import reverse
-from oauth.models import OAuthToken
 from django.utils.timezone import now
 from putils.utils import get_setting
 
@@ -15,6 +14,7 @@ class OAuthService:
     Subclasses must define their provider-specific class variables.
     """
     # These MUST be defined in subclasses
+
     OAUTH_PROVIDER_NAME = None
     OAUTH_CLIENT_ID = None
     OAUTH_CLIENT_SECRET = None
@@ -24,8 +24,15 @@ class OAuthService:
     OAUTH_REVOKE_ENDPOINT = None
     OAUTH_SCOPE = None
     APP_NAME = "oauth" # The Django app name, needed for reverse URLs, override in subclass
-    AUTH_TOKEN_MODEL = OAuthToken
     EXTRA_AUTH_PARAMS = {}  # Allow subclasses to specify provider-specific parameters
+
+
+    @classmethod
+    def get_auth_token_model(cls):
+        """ Lazy-loads the OAuthToken model to prevent import issues. """
+        from oauth.models import OAuthToken  # ✅ CORRECT: Import inside the method
+        return OAuthToken
+
 
     @classmethod
     def get_token(cls, user_id="default"):
@@ -40,9 +47,10 @@ class OAuthService:
         Returns:
             str: A valid access token.
         """
+        OAuthToken = cls.get_auth_token_model()
         try:
             # Check for an existing valid access token
-            token = cls.AUTH_TOKEN_MODEL.objects.filter(
+            token = OAuthToken.objects.filter(
                 user_id=user_id, 
                 service=cls.OAUTH_PROVIDER_NAME, 
                 expires_at__gt=now()
@@ -53,7 +61,7 @@ class OAuthService:
                 return token.access_token
 
             # If no valid token, check for a refresh token
-            token = cls.AUTH_TOKEN_MODEL.objects.filter(
+            token = OAuthToken.objects.filter(
                 user_id=user_id, 
                 service=cls.OAUTH_PROVIDER_NAME, 
                 refresh_token__isnull=False
