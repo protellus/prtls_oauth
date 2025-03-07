@@ -10,4 +10,3 @@ setup(
         "putils @ git+https://github.com/protellus/putils.git@main"
     ],
 )
-    
