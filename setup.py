@@ -7,7 +7,7 @@ setup(
     include_package_data=True,
     install_requires=[
         "django>=3.2",
-        "putils @ git+https://github.com/YOUR_USERNAME/putils.git@main"
+        "putils @ git+https://github.com/protellus/putils.git@main"
     ],
 )
     
