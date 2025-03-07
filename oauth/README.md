@@ -12,7 +12,7 @@ This package provides a reusable **OAuth authentication system** for Django that
 ## **🛠️ Installation**
 To install from a private GitHub repository:  
 
-pip install git+https://github.com/YOUR_USERNAME/oauth.git@main
+pip install git+https://github.com/protellus/oauth.git@main
 
 For local development:  
 pip install -e /path/to/oauth
@@ -82,3 +82,30 @@ urlpatterns = [
     path("callback/google/", GoogleOAuthViewSet.as_view({"get": "callback"}), name="callback_google"),
 ]
 
+### 🛠️ Django Admin Integration
+This package adds OAuth token management to Django Admin.
+
+Add Authorization Buttons to Django Admin
+
+To integrate Google & Zoho authorization buttons into the Django Admin changelist, create:
+
+templates/admin/oauth/oauthtoken/change_list.html
+and insert:
+
+{% extends "admin/change_list.html" %}
+
+{% block object-tools-items %}
+    {{ block.super }}
+    <li>
+        <a href="{{ authorize_google_url }}" class="button" style="background-color: #4CAF50; color: white;">
+            Google Authorization
+        </a>
+    </li>
+    <li>
+        <a href="{{ authorize_zoho_url }}" class="button" style="background-color: #4CAF50; color: white;">
+            Zoho Authorization
+        </a>
+    </li>
+{% endblock %}
+
+✅ This adds "Google Authorization" and "Zoho Authorization" buttons in the Django Admin UI.
