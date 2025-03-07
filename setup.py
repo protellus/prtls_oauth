@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name="oauth",
-    version="1.0.0",
+    version="1.0.2",
     packages=find_packages(include=["oauth", "oauth.*"]),  # ✅ Includes all package modules
     include_package_data=True,  # ✅ Ensures migrations and templates are included
     install_requires=[
