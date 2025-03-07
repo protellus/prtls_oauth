@@ -7,6 +7,7 @@ setup(
     include_package_data=True,
     install_requires=[
         "django>=3.2",
+        "djangorestframework",
         "putils @ git+https://github.com/protellus/putils.git@main"
     ],
 )
