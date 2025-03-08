@@ -30,7 +30,8 @@ class OAuthTokenAdmin(admin.ModelAdmin):
     search_fields = ("user_id", "service")
     ordering = ("service", "-expires_at")
     readonly_fields = ("access_token", "refresh_token", "created_at", "updated_at", "access_token_preview", "refresh_token_preview", "token_type", "user_id", "service", "expires_at", "is_access_token_valid")
-
+    change_list_template = 'admin/prtls_oauth/oauthtoken/change_list.html'
+    
     actions = ["refresh_access_token"]
 
     fieldsets = (
@@ -120,16 +121,19 @@ class OAuthTokenAdmin(admin.ModelAdmin):
 
     def changelist_view(self, request, extra_context=None):
         """
-        Override the changelist view to add 'Authorize' buttons.
+        Override the changelist view to add 'Authorize' buttons for each OAuth provider.
         """
         extra_context = extra_context or {}
-        try:
-            extra_context["authorize_google_url"] = reverse("gworkspace:authorize_google")
-            extra_context["authorize_zoho_url"] = reverse("financials:authorize_zoho")
-        except Exception as e:
-            logger.error(f"Failed to reverse authorize urls: {e}")
-            extra_context["authorize_google_url"] = None
-            extra_context["authorize_zoho_url"] = None
+        authorize_urls = {}
+
+        for service_name in self.OAUTH_PROVIDERS.keys():
+            try:
+                authorize_urls[service_name] = reverse(f'admin:authorize_{service_name}')
+            except Exception as e:
+                logger.error(f"Failed to reverse URL for {service_name}: {e}")
+                authorize_urls[service_name] = None
+
+        extra_context['authorize_urls'] = authorize_urls
         return super().changelist_view(request, extra_context=extra_context)
 
     def get_urls(self):
