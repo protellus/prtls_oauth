@@ -4,7 +4,7 @@ setup(
     name="prtls_oauth",
     #version="1.0.4", # Added migrations and lazy loading model to prevent AppRegistryNotReady: Apps aren't loaded yet.
     #version="1.0.5",  # Token model is now lazy loaded as aproperty to prevent AppRegistryNotReady: Apps aren't loaded yet.
-    version="1.0.7",  # Pinned versions to project revisions.
+    version="1.0.8",  # Pinned versions to project revisions.
     packages=find_packages(include=["prtls_oauth", "prtls_oauth.*"]),  # ✅ Includes all package modules
     include_package_data=True,  # ✅ Ensures migrations and templates are included
     install_requires=[
