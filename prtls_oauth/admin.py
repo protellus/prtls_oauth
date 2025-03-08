@@ -30,7 +30,6 @@ class OAuthTokenAdmin(admin.ModelAdmin):
     search_fields = ("user_id", "service")
     ordering = ("service", "-expires_at")
     readonly_fields = ("access_token", "refresh_token", "created_at", "updated_at", "access_token_preview", "refresh_token_preview", "token_type", "user_id", "service", "expires_at", "is_access_token_valid")
-    change_list_template = 'admin/prtls_oauth/oauthtoken/change_list.html'
     
     actions = ["refresh_access_token"]
 
