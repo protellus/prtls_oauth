@@ -145,6 +145,8 @@ class OAuthTokenAdmin(admin.ModelAdmin):
             path(f"authorize_{service}/", self.admin_site.admin_view(self.authorize_service), name=f"authorize_{service}")
             for service in self.OAUTH_PROVIDERS.keys()
         ]
+        templates = get_setting("TEMPLATES", {})
+        logger.info(f"Loaded templates: {templates}")
         logger.info(f"Added custom URLs for OAuth authorization: {custom_urls}")
         return custom_urls + urls
 
