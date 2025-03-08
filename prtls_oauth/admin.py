@@ -133,6 +133,7 @@ class OAuthTokenAdmin(admin.ModelAdmin):
                 authorize_urls[service_name] = None
 
         extra_context['authorize_urls'] = authorize_urls
+        logger.info(f"Added authorize URLs to context: {authorize_urls}")
         return super().changelist_view(request, extra_context=extra_context)
 
     def get_urls(self):
@@ -144,6 +145,7 @@ class OAuthTokenAdmin(admin.ModelAdmin):
             path(f"authorize_{service}/", self.admin_site.admin_view(self.authorize_service), name=f"authorize_{service}")
             for service in self.OAUTH_PROVIDERS.keys()
         ]
+        logger.info(f"Added custom URLs for OAuth authorization: {custom_urls}")
         return custom_urls + urls
 
     def authorize_service(self, request, service_name):
