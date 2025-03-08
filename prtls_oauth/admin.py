@@ -136,10 +136,17 @@ class OAuthTokenAdmin(admin.ModelAdmin):
         extra_context['authorize_urls'] = authorize_urls
         logger.info(f"Added authorize URLs to context: {authorize_urls}")
 
+        from django.template import engines
+        from django.template.loader import get_template
 
-        # Check which template Django is using
-        templates = self.get_template_list("admin/change_list.html")
-        logger.info(f"Checking loaded templates: {templates}")
+        # Log all template search paths
+        django_engine = engines['django']
+        logger.info(f"🔍 Django is searching these directories for templates: {django_engine.dirs}")
+        try:
+            selected_template = get_template("admin/prtls_oauth/oauthtoken/change_list.html")
+            logger.info(f"✅ Django is using this template: {selected_template.template.name}")
+        except Exception as e:
+            logger.error(f"❌ Django could not find the template: {e}")
 
         return super().changelist_view(request, extra_context=extra_context)
 
