@@ -3,28 +3,27 @@ from setuptools import setup, find_packages
 setup(
     name="oauth",
     #version="1.0.4", # Added migrations and lazy loading model to prevent AppRegistryNotReady: Apps aren't loaded yet.
-    version="1.0.5",  # Token model is now lazy loaded as aproperty to prevent AppRegistryNotReady: Apps aren't loaded yet.
+    #version="1.0.5",  # Token model is now lazy loaded as aproperty to prevent AppRegistryNotReady: Apps aren't loaded yet.
+    version="1.0.6",  # Pinned versions to project revisions.
     packages=find_packages(include=["oauth", "oauth.*"]),  # ✅ Includes all package modules
     include_package_data=True,  # ✅ Ensures migrations and templates are included
     install_requires=[
-        "asgiref==3.8.1",
-        "certifi==2025.1.31",
-        "charset-normalizer==3.4.1",
+        "asgiref==3.7.2",
+        "certifi==2023.7.22",
+        "charset-normalizer==3.2.0",
         "Django==3.2",
         "djangorestframework==3.14.0",
-        "idna==3.10",
-        "requests==2.32.3",
-        "sqlparse==0.5.3",
+        "idna==3.4",
+        "putils==0.2.3",
+        "pytz==2023.3",
+        "requests==2.31.0",
+        "sqlparse==0.4.4",
         "tzdata==2025.1",
-        "urllib3==1.26.16",
-        "putils @ git+https://github.com/protellus/putils.git@main",  # ✅ External dependency
+        "urllib3==1.26.16"
     ],
-    classifiers=[
-        "Development Status :: 4 - Beta",
-        "Intended Audience :: Developers",
-        "License :: OSI Approved :: MIT License",
-        "Programming Language :: Python :: 3",
-        "Framework :: Django",
-    ],
-    python_requires=">=3.8",
-)
+    extras_require={
+        "dev": [
+            "black",
+            "pytest",
+        ]
+    },)
