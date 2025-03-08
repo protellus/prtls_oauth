@@ -3,8 +3,8 @@ from django.urls import reverse, path
 from django.utils.html import format_html
 from django.utils.timezone import now
 from django.contrib import messages
-from putils.utils import get_setting
-from oauth.models import OAuthToken
+from prtls_utils.utils import get_setting
+from prtls_oauth.models import OAuthToken
 from django.shortcuts import redirect
 import logging
 
