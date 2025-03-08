@@ -241,13 +241,17 @@ class OAuthService:
             Updated AUTH_TOKEN_MODEL instance.
         """
 
+        logger.debug(f"Saving {service} token for user {user_id}")
+
         OAuthToken = cls().AUTH_TOKEN_MODEL
         if not OAuthToken:
             raise RuntimeError("AUTH_TOKEN_MODEL is not defined in subclass.")
 
+        logger.debug(f"Token expires in {expires_in} seconds")
         # Ensure we fetch ONLY the token for the correct service
         existing_token = OAuthToken.objects.filter(user_id=user_id, service=service).first()
 
+        logger.debug(f"Existing token: {existing_token}")
         # Preserve refresh_token if it's missing in the new response
         if not refresh_token and existing_token:
             refresh_token = existing_token.refresh_token
@@ -262,6 +266,7 @@ class OAuthService:
                 "token_type": token_type,
             },
         )
+        logger.debug(f"Token created: {created}")
         return token
 
     @classmethod
