@@ -144,12 +144,17 @@ class OAuthService:
         response = requests.post(f"{cls.OAUTH_BASE_URL}{cls.OAUTH_TOKEN_ENDPOINT}", data=payload)
         response.raise_for_status()
 
+        logger.info(f"Received response from {cls.OAUTH_PROVIDER_NAME}")
+        logger.debug(f"Response: {response.json()}")
+
         data = response.json()
 
         if "access_token" not in data or "expires_in" not in data:
             raise RuntimeError(f"Unexpected response format: {data}")
 
         token_type = data.get("token_type", "Bearer")
+
+        logger.debug(f"Saving {cls.OAUTH_PROVIDER_NAME} token for user {user_id}")
         return cls.save_or_update_token(
             user_id=user_id,
             service=cls.OAUTH_PROVIDER_NAME,
