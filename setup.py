@@ -14,7 +14,7 @@ setup(
         "Django==3.2",
         "djangorestframework==3.14.0",
         "idna==3.4",
-        "putils==0.2.3",
+        "putils>=0.2.3",
         "pytz==2023.3",
         "requests==2.31.0",
         "sqlparse==0.4.4",
