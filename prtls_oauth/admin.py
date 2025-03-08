@@ -30,7 +30,8 @@ class OAuthTokenAdmin(admin.ModelAdmin):
     search_fields = ("user_id", "service")
     ordering = ("service", "-expires_at")
     readonly_fields = ("access_token", "refresh_token", "created_at", "updated_at", "access_token_preview", "refresh_token_preview", "token_type", "user_id", "service", "expires_at", "is_access_token_valid")
-    
+    change_list_template = "admin/prtls_oauth/oauthtoken/change_list.html"
+
     actions = ["refresh_access_token"]
 
     fieldsets = (
@@ -134,6 +135,17 @@ class OAuthTokenAdmin(admin.ModelAdmin):
 
         extra_context['authorize_urls'] = authorize_urls
         logger.info(f"Added authorize URLs to context: {authorize_urls}")
+
+
+
+        # Log expected template locations
+        template_paths = ["admin/prtls_oauth/oauthtoken/change_list.html", "admin/change_list.html"]
+        from django.template.loader import select_template
+        try:
+            selected_template = select_template(template_paths)
+            logger.info(f"✅ Django is using this template: {selected_template.template.name}")
+        except Exception as e:
+            logger.error(f"❌ Django could not find a custom template: {e}")
 
 
         # Check which template Django is using
