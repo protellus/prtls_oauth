@@ -134,6 +134,12 @@ class OAuthTokenAdmin(admin.ModelAdmin):
 
         extra_context['authorize_urls'] = authorize_urls
         logger.info(f"Added authorize URLs to context: {authorize_urls}")
+
+
+        # Check which template Django is using
+        templates = self.get_template_list("admin/change_list.html")
+        logger.info(f"Checking loaded templates: {templates}")
+
         return super().changelist_view(request, extra_context=extra_context)
 
     def get_urls(self):
@@ -167,3 +173,15 @@ class OAuthTokenAdmin(admin.ModelAdmin):
             logger.error(f"Failed to initiate OAuth for {service_name}: {e}")
             self.message_user(request, f"Failed to initiate OAuth for {service_name}: {e}", messages.ERROR)
             return redirect("..")
+        
+    def get_template_list(self, template_name):
+        """
+        Get a list of locations Django is looking for the template.
+        """
+        from django.template.loader import select_template
+        try:
+            template = select_template([template_name])
+            return template.template.name  # Returns the exact template path
+        except Exception as e:
+            logger.error(f"Template {template_name} not found: {e}")
+            return "Template not found"
