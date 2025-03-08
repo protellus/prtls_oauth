@@ -7,7 +7,7 @@ from django.urls import reverse
 from django.utils.timezone import now
 from prtls_utils.utils import get_setting
 
-logger = logging.getLogger(__name__)
+logger = logging.getLogger('oauth')
 
 class OAuthService:
     """
