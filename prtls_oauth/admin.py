@@ -3,6 +3,7 @@ from django.urls import reverse, path
 from django.utils.html import format_html
 from django.utils.timezone import now
 from django.urls import re_path
+
 from django.contrib import messages
 from prtls_utils.utils import get_setting
 from prtls_oauth.models import OAuthToken
@@ -128,12 +129,13 @@ class OAuthTokenAdmin(admin.ModelAdmin):
         authorize_urls = {}
 
         for service_name in self.OAUTH_PROVIDERS.keys():
-            try:
-                authorize_urls[service_name] = reverse(f'admin:authorize_{service_name}')
-            except Exception as e:
-                logger.error(f"Failed to reverse URL for {service_name}: {e}")
-                authorize_urls[service_name] = None
+                try:
+                    authorize_urls[service_name] = reverse("admin:authorize_service", args=[service_name])
+                except Exception as e:
+                    logger.error(f"Failed to reverse URL for {service_name}: {e}")
+                    authorize_urls[service_name] = None
 
+        extra_context['authorize_urls'] = authorize_urls
         return super().changelist_view(request, extra_context=extra_context)
 
     def get_urls(self):
@@ -142,14 +144,14 @@ class OAuthTokenAdmin(admin.ModelAdmin):
         """
         urls = super().get_urls()
         custom_urls = [
-            re_path(r"^authorize_(?P<service_name>[\w]+)/$", 
-                    self.admin_site.admin_view(self.authorize_service), 
-                    name=f"authorize_{service}")
-            for service in self.OAUTH_PROVIDERS.keys()
+            path(f"authorize_<str:service_name>/", 
+                self.admin_site.admin_view(self.authorize_service), 
+                name="authorize_service")  # Single dynamic name
         ]
-        return custom_urls + urls
 
-    def authorize_service(self, request, service_name):
+        return custom_urls + urls
+        
+    def authorize_service(self, request, service_name, *args, **kwargs):
         """
         Handle the authorization redirect for different services.
         """
