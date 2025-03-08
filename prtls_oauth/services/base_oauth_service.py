@@ -5,7 +5,7 @@ import logging
 from django.apps import apps
 from django.urls import reverse
 from django.utils.timezone import now
-from putils.utils import get_setting
+from prtls_utils.utils import get_setting
 
 logger = logging.getLogger(__name__)
 
