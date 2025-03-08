@@ -122,6 +122,9 @@ class OAuthService:
         Returns:
             str: The access token.
         """
+
+        logger.info(f"Exchanging authorization code for {cls.OAUTH_PROVIDER_NAME} tokens")
+
         if not cls.OAUTH_CLIENT_ID or not cls.OAUTH_CLIENT_SECRET or not cls.OAUTH_TOKEN_ENDPOINT:
             raise RuntimeError("OAuth credentials missing in subclass.")
 
@@ -136,6 +139,8 @@ class OAuthService:
             "grant_type": "authorization_code",
         }
 
+        logger.info(f"Requesting tokens from {cls.OAUTH_PROVIDER_NAME}")
+        logger.debug(f"Payload: {payload}")
         response = requests.post(f"{cls.OAUTH_BASE_URL}{cls.OAUTH_TOKEN_ENDPOINT}", data=payload)
         response.raise_for_status()
 
@@ -271,8 +276,11 @@ class OAuthService:
         # Get the relative path for the OAuth callback
         relative_path = reverse(f"{cls.APP_NAME}:{cls.OAUTH_PROVIDER_NAME}_callback")
 
+        logger.info(f"Building redirect URI for {cls.OAUTH_PROVIDER_NAME} callbackw with relative path: {relative_path}")
+
         # 1️⃣ If request is provided, use it to build the absolute URI
         if request:
+            logger.info("Request is available. Building absolute URI")
             return request.build_absolute_uri(relative_path)
 
         # 2️⃣ If request is NOT available, use the SITE_URL from settings
