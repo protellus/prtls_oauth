@@ -1,5 +1,5 @@
 from django.urls import path
-from oauth.views import BaseOAuthViewSet
+from prtls_oauth.views import BaseOAuthViewSet
 
 app_name = "oauth"  # Define the namespace
 
