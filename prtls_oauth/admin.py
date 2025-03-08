@@ -137,17 +137,6 @@ class OAuthTokenAdmin(admin.ModelAdmin):
         logger.info(f"Added authorize URLs to context: {authorize_urls}")
 
 
-
-        # Log expected template locations
-        template_paths = ["admin/prtls_oauth/oauthtoken/change_list.html", "admin/change_list.html"]
-        from django.template.loader import select_template
-        try:
-            selected_template = select_template(template_paths)
-            logger.info(f"✅ Django is using this template: {selected_template.template.name}")
-        except Exception as e:
-            logger.error(f"❌ Django could not find a custom template: {e}")
-
-
         # Check which template Django is using
         templates = self.get_template_list("admin/change_list.html")
         logger.info(f"Checking loaded templates: {templates}")
