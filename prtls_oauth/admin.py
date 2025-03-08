@@ -2,6 +2,7 @@ from django.contrib import admin
 from django.urls import reverse, path
 from django.utils.html import format_html
 from django.utils.timezone import now
+from django.urls import re_path
 from django.contrib import messages
 from prtls_utils.utils import get_setting
 from prtls_oauth.models import OAuthToken
@@ -133,21 +134,6 @@ class OAuthTokenAdmin(admin.ModelAdmin):
                 logger.error(f"Failed to reverse URL for {service_name}: {e}")
                 authorize_urls[service_name] = None
 
-        extra_context['authorize_urls'] = authorize_urls
-        logger.info(f"Added authorize URLs to context: {authorize_urls}")
-
-        from django.template import engines
-        from django.template.loader import get_template
-
-        # Log all template search paths
-        django_engine = engines['django']
-        logger.info(f"🔍 Django is searching these directories for templates: {django_engine.dirs}")
-        try:
-            selected_template = get_template("admin/prtls_oauth/oauthtoken/change_list.html")
-            logger.info(f"✅ Django is using this template: {selected_template.template.name}")
-        except Exception as e:
-            logger.error(f"❌ Django could not find the template: {e}")
-
         return super().changelist_view(request, extra_context=extra_context)
 
     def get_urls(self):
@@ -156,12 +142,11 @@ class OAuthTokenAdmin(admin.ModelAdmin):
         """
         urls = super().get_urls()
         custom_urls = [
-            path(f"authorize_{service}/", self.admin_site.admin_view(self.authorize_service), name=f"authorize_{service}")
+            re_path(r"^authorize_(?P<service_name>[\w]+)/$", 
+                    self.admin_site.admin_view(self.authorize_service), 
+                    name=f"authorize_{service}")
             for service in self.OAUTH_PROVIDERS.keys()
         ]
-        templates = get_setting("TEMPLATES", {})
-        logger.info(f"Loaded templates: {templates}")
-        logger.info(f"Added custom URLs for OAuth authorization: {custom_urls}")
         return custom_urls + urls
 
     def authorize_service(self, request, service_name):
