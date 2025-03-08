@@ -59,7 +59,7 @@ class BaseOAuthViewSet(ViewSet):
             logger.info(f"OAuth token successfully retrieved and stored for {oauth_service.OAUTH_PROVIDER_NAME}")
 
             # 🎯 Redirect to Django Admin to view tokens
-            return redirect(reverse("admin:oauth_oauthtoken_changelist"))
+            return redirect(reverse("admin:prtlsoauth_oauthtoken_changelist"))
 
         except RuntimeError as e:
             logger.error(f"Error during OAuth callback handling: {e}")
