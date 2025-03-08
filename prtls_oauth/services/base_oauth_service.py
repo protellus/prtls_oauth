@@ -30,8 +30,9 @@ class OAuthService:
     @property
     def AUTH_TOKEN_MODEL(self):
         """ Lazily load the OAuthToken model to avoid AppRegistryNotReady issues """
-        return apps.get_model("oauth", "OAuthToken")  # ✅ This ensures the model is loaded dynamically
+        return apps.get_model("prtls_oauth", "OAuthToken")  # ✅ This ensures the model is loaded dynamically
 
+    
     @classmethod
     def get_token(cls, user_id="default"):
         """
