@@ -8,7 +8,7 @@ from prtls_oauth.models import OAuthToken
 from django.shortcuts import redirect
 import logging
 
-logger = logging.getLogger(__name__)
+logger = logging.getLogger('oauth')
 
 @admin.register(OAuthToken)
 class OAuthTokenAdmin(admin.ModelAdmin):
