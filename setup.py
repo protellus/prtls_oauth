@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name="prtls_oauth",
-    version="1.0.18",
+    version="1.0.19",
     packages=find_packages(include=["prtls_oauth", "prtls_oauth.*"]),  # ✅ Includes all package modules
     include_package_data=True,  # ✅ Ensures migrations and templates are included
     install_requires=[
