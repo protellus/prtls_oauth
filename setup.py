@@ -12,7 +12,7 @@ setup(
         "Django==3.2",
         "djangorestframework==3.14.0",
         "idna==3.4",
-        "prtls_utils @ git+https://github.com/protellus/prtls-utils.git@main",
+        "prtls_utils @ git+https://github.com/protellus/prtls-utils.git@0.1.5",
         "pytz==2023.3",
         "requests==2.31.0",
         "sqlparse==0.4.4",
