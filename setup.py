@@ -11,7 +11,7 @@ setup(
         "charset-normalizer==3.2.0",
         "Django==4.2.20",
         "djangorestframework==3.14.0",
-        "idna==3.4",
+        "idna==3.7",
         "prtls-utils @ git+https://github.com/protellus/prtls-utils.git@main",
         "pytz==2023.3",
         "requests==2.31.0",
