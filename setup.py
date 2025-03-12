@@ -17,7 +17,7 @@ setup(
         "requests==2.31.0",
         "sqlparse==0.5.0",
         "tzdata==2025.1",
-        "urllib3==1.26.16"
+        "urllib3==1.26.19"
     ],
     extras_require={
         "dev": [
