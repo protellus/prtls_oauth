@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name="prtls_oauth",
-    version="1.0.20",
+    version="1.0.21",
     packages=find_packages(include=["prtls_oauth", "prtls_oauth.*"]),  # ✅ Includes all package modules
     include_package_data=True,  # ✅ Ensures migrations and templates are included
     install_requires=[
@@ -12,7 +12,7 @@ setup(
         "Django==3.2",
         "djangorestframework==3.14.0",
         "idna==3.4",
-        "prtls-utils @ git+https://github.com/protellus/prtls-utils.git@0.1.5",
+        "prtls-utils @ git+https://github.com/protellus/prtls-utils.git@main",
         "pytz==2023.3",
         "requests==2.31.0",
         "sqlparse==0.4.4",
