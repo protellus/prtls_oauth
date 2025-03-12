@@ -7,7 +7,7 @@ setup(
     include_package_data=True,  # ✅ Ensures migrations and templates are included
     install_requires=[
         "asgiref==3.8.1",
-        "certifi==2023.7.22",
+        "certifi==2024.7.4",
         "charset-normalizer==3.2.0",
         "Django==4.2.20",
         "djangorestframework==3.14.0",
