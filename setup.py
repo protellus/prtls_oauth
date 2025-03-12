@@ -14,7 +14,7 @@ setup(
         "idna==3.7",
         "prtls-utils @ git+https://github.com/protellus/prtls-utils.git@main",
         "pytz==2023.3",
-        "requests==2.31.0",
+        "requests==2.32.2",
         "sqlparse==0.5.0",
         "tzdata==2025.1",
         "urllib3==1.26.19"
