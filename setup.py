@@ -1,7 +1,7 @@
 from setuptools import setup, find_packages
 
 setup(
-    name="prtls-oauth",
+    name="prtls_oauth",
     use_scm_version=True,
     setup_requires=["setuptools_scm"],
     packages=find_packages(include=["prtls-oauth", "prtls-oauth.*"]), 
@@ -13,7 +13,7 @@ setup(
         "Django>=4.2.20,<5.1",
         "djangorestframework>=3.14.0",
         "idna>=3.4",
-        "prtls-utils @ git+https://github.com/protellus/prtls-utils.git@main",
+        "prtls_utils @ git+https://github.com/protellus/prtls_utils.git@main",
         "pytz>=2023.3",
         "requests>=2.32.0",
         "sqlparse>=0.5.3",
