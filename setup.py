@@ -1,10 +1,10 @@
 from setuptools import setup, find_packages
 
 setup(
-    name="prtls_oauth",
+    name="prtls-oauth",
     use_scm_version=True,
     setup_requires=["setuptools_scm"],
-    packages=find_packages(include=["prtls_oauth", "prtls_oauth.*"]), 
+    packages=find_packages(include=["prtls-oauth", "prtls-oauth.*"]), 
     include_package_data=True, 
     install_requires=[
         "asgiref==3.8.1",
